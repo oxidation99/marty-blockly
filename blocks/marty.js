@@ -49,13 +49,33 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
   },
   {
   	"type": "marty_walk_forward",
-  	"message0": "Walk forward %1 steps",
+  	"message0": "Walk forward %1 steps. step length: %2, turn: %3, step time: %4",
   	"args0": [{
       "type": "field_number",
       "name": "STEPS",
       "value": 2,
       "min": 0,
       "precision": 1
+    },{
+      "type": "field_number",
+      "name": "STEP_LENGTH",
+      "value": 40,
+      "min": 0,
+      "max": 100,
+      "precision": 1
+    },{
+      "type": "field_number",
+      "name": "TURN",
+      "value": 0,
+      "min": -100,
+      "max": 100,
+      "precision": 1
+    },{
+      "type": "field_number",
+      "name": "STEP_TIME",
+      "value": 1.8,
+      "min": 0,
+      "precision": 0.1
     }],
     "previousStatement": null,
     "nextStatement": null,
