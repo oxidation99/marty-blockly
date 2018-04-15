@@ -14,7 +14,7 @@ Blockly.JavaScript['marty_hello'] = function(block) {
     //var code = Blockly.JavaScript.variableDB_.getName(block.getFieldValue('VAR'),
     //    Blockly.Variables.NAME_TYPE);
     //return [code, Blockly.JavaScript.ORDER_ATOMIC];
-    return 'marty.hello(1);';
+    return 'marty.hello(1);\n';
 };
 
 Blockly.JavaScript['marty_walk'] = function(block){
@@ -27,7 +27,7 @@ Blockly.JavaScript['marty_walk'] = function(block){
     } else {
   	return 'console.log(\'Number of steps not found\');';
     }
-    return 'marty.walk(' + steps + ', ' + turn + ', ' + step_time*1000 +', ' + step_length + ');';
+    return 'marty.walk(' + steps + ', ' + turn + ', ' + step_time*1000 +', ' + step_length + ');\n';
 };
 
 Blockly.JavaScript['marty_simple_walk'] = function(block){
@@ -41,7 +41,7 @@ Blockly.JavaScript['marty_simple_walk'] = function(block){
     var step_length = '40';
     var step_time = '1.8';
     var turn = '0';
-    return 'marty.walk(' + steps + ', ' + turn + ', ' + step_time*1000 +', ' + step_length + ');';
+    return 'marty.walk(' + steps + ', ' + turn + ', ' + step_time*1000 +', ' + step_length + ');\n';
 };
 
 Blockly.JavaScript['marty_kick'] = function(block){
@@ -52,5 +52,5 @@ Blockly.JavaScript['marty_kick'] = function(block){
     } else {
   	return 'console.log(\'Kick not found\');';
     }
-    return 'marty.kick(\'' + side + '\', ' + twist + ', ' + move_time*1000 + ');';
+    return 'marty.kick(\'' + side + '\', ' + twist + ', ' + move_time*1000 + ');\n';
 }

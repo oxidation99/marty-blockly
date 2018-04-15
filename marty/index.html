@@ -111,46 +111,63 @@ var scanComplete = false;
 var checkTimeout;
 var scanResults = 0;
 
+function scanForMartys(ip, timeout){
 
-function scanForMartys(ip){
-    if (ip === undefined){ 
+    if (ip === undefined || ip === null){ 
         if (localIP != null){
             var ip_parts = localIP.split(".");
             ip_parts.pop();
             ip = ip_parts.join(".");
             console.log("gonna scan: " + ip);
         } else {
+            // TODO
+            //document.getElementById("ipWarning").style.display = "inline";
             ip = "192.168.0";
         }
     }
+    if (timeout === undefined){timeout = 20000;}
+    $('#overlay-content').empty();
+    $('#overlay-content').append("Scanning for Marty...");
     console.log("scanning: " + ip);
-    scanRange(ip, martylist, 15000);
+    scanRange(ip, martylist, timeout);
     checkTimeout = setTimeout(checkResults, 1000, ip);
-    setTimeout(checkMartys, 16000, ip);
+    //setTimeout(listMartys, timeout+1000, ip);
 }
 
 function checkResults(ip){
+    $('#overlay-content').empty();
+    $('#overlay-content').append("<span class=\"bitbigger tt muted\">Scanning for Martys (" + ip +") &nbsp; <i class=\"fa fa-spin fa-spinner\"></i><br />" + Math.round(scanResults*100/255) + "%</span><p>");
     console.log("scan progress: " + scanResults + "/255"); 
-    if (martyNames.length != martylist.length){
-        // new Martys found. redo names list and reload selector extension
-        martyNames = [];
-        for (m in martylist){
-            martyNames.push(martylist[m][1]);
-        }
-
-        console.log("martylist size: " + martylist.length);
-        // if this is the first Marty found, we select it
-        if (marty === null){
-            console.log("First Marty, selecting " + martylist[0][1] + " on " + martylist[0][1]);
-            marty = new Marty(martylist[0][0], martylist[0][1]);
-        }
-    }
-    if (scanResults < 254){
+    if (scanResults < 255){
+        listMartys(ip, false);
         checkTimeout = setTimeout(checkResults, 1000, ip);
     } else {
-        checkMartys(ip);
+        clearTimeout(checkTimeout);
+        $('#MartyList').empty();
+        listMartys(ip, true);
+        if (!martylist.length){
+            if (localIP != null && ip != "192.168.0" && ip != "192.168.1"){
+                scanForMartys("192.168.0");
+            } else if (ip == "192.168.0"){
+                scanForMartys("192.168.1");
+            }
+        }
     }
 }
+
+function listMartys(ip, finishedRange){
+    //clearTimeout(checkTimeout);
+    //$('#MartyList').empty();
+     if (martylist.length){
+        for (var m in martylist){
+            //$('#MartyList').append("Found <b>" + martylist[m][1] + "</b> on the IP: " + martylist[m][0] + ". <a href=\"#\" onlick=\"calibrate('" + martylist[m][0] + "', '" + martylist[m][1] + "');\">Calibrate?</a><br /><a onclick=\"console.log('hello');\">hello</a>");
+            $('#overlay-content').append("Found <b>" + martylist[m][1] + "</b> on the IP: " + martylist[m][0] + ". <button class=\"btn smaller success\" onclick=\"selectMarty('" + martylist[m][0] + "', '" + escape(martylist[m][1]) + "', -1);\">Select</button><br />");
+        }
+    } else if (finishedRange){
+        $('#overlay-content').append("No Martys found :-(<br><button class=\"btn complement\" onclick=\"console.log('scanning...');scanForMartys(null, 60000);\">Re-scan?</button><br><br>Or add by IP: <input type=\"text\" id=\"martyIp\"> <button class=\"btn\" onclick=\"add_marty_by_ip();\">Add</button>");
+    }
+}
+
 
 function checkMartys(ip){
     clearTimeout(checkTimeout);
@@ -170,6 +187,12 @@ function checkMartys(ip){
     }
 }
 
+function selectMarty(IP, name){
+  marty = new Marty(IP, name);
+  document.getElementById("overlay").style.visibility = "hidden";
+  return;
+}
+
 setTimeout(scanForMartys,1000);
 </script>
   <style>
@@ -181,22 +204,46 @@ setTimeout(scanForMartys,1000);
       font-weight: normal;
       font-size: 140%;
     }
+    #overlay{
+      height: 100%;
+      width: 100%;
+      position: absolute;
+      left: 0px;
+      top: 0px;
+      background-color: #37abc8;
+      z-index: 100;
+    }
+    #overlay-content{
+      color:#ececec;
+      font-size: 20pt;
+    }
   </style>
 </head>
 <body>
-  <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
-    <a href="../index.html">Demos</a> &gt; Generating JavaScript</h1>
+  <div id="overlay">
+    <table width="100%" height="100%">
+      <tr>
+        <td valign="middle" align="center">
 
-  <p>This is a simple demo of generating code from blocks.</p>
+          <div id="overlay-content">
+            Welcome to Marty Blockly
+          </div>
+        </td>
+      </tr>
+    </table>
 
-  <p>&rarr; More info on <a href="https://developers.google.com/blockly/guides/configure/web/code-generators">Code Generators</a>&hellip;</p>
-
+  </div>
   <p>
     <button onclick="showCode()">Show JavaScript</button>
     <button onclick="runCode()">Run JavaScript</button>
   </p>
 
-  <div id="blocklyDiv" style="height: 480px; width: 600px;"></div>
+  <div id="blocklyDiv" style="height: 500px; width: 1500px;"></div>
+
+  <p>
+  <div id="codeDiv" style="height:50%; width: 90%" >
+    <textarea id="codeArea" rows="25" cols="150"></textarea>
+  </div>
 
   <xml id="toolbox" style="display: none">
     <category name="Logic">
@@ -204,7 +251,7 @@ setTimeout(scanForMartys,1000);
       <block type="logic_compare"></block>
       <block type="logic_operation"></block>
       <block type="logic_negate"></block>
-      <block type="logic_boolean"></block>
+      <block type="logic_boolean"></block>  
     </category>
     <category name="Loops">
       <block type="controls_repeat_ext">
@@ -235,51 +282,7 @@ setTimeout(scanForMartys,1000);
   </xml>
 
   <xml id="startBlocks" style="display: none">
-    <block type="controls_if" inline="false" x="20" y="20">
-      <mutation else="1"></mutation>
-      <value name="IF0">
-        <block type="logic_compare" inline="true">
-          <field name="OP">EQ</field>
-          <value name="A">
-            <block type="math_arithmetic" inline="true">
-              <field name="OP">MULTIPLY</field>
-              <value name="A">
-                <block type="math_number">
-                  <field name="NUM">6</field>
-                </block>
-              </value>
-              <value name="B">
-                <block type="math_number">
-                  <field name="NUM">7</field>
-                </block>
-              </value>
-            </block>
-          </value>
-          <value name="B">
-            <block type="math_number">
-              <field name="NUM">42</field>
-            </block>
-          </value>
-        </block>
-      </value>
-      <statement name="DO0">
-        <block type="text_print" inline="false">
-          <value name="TEXT">
-            <block type="text">
-              <field name="TEXT">Don't panic</field>
-            </block>
-          </value>
-        </block>
-      </statement>
-      <statement name="ELSE">
-        <block type="text_print" inline="false">
-          <value name="TEXT">
-            <block type="text">
-              <field name="TEXT">Panic</field>
-            </block>
-          </value>
-        </block>
-      </statement>
+    <block type="marty_hello" inline="false" x="20" y="20">
     </block>
   </xml>
 
@@ -294,7 +297,7 @@ setTimeout(scanForMartys,1000);
       // Generate JavaScript code and display it.
       Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
       var code = Blockly.JavaScript.workspaceToCode(demoWorkspace);
-      alert(code);
+      document.getElementById("codeArea").value = code;
     }
 
     function runCode() {
@@ -310,6 +313,8 @@ setTimeout(scanForMartys,1000);
         alert(e);
       }
     }
+
+    setInterval(showCode, 1000);
   </script>
 
 </body>
