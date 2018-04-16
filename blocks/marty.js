@@ -30,7 +30,7 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "type": "marty_hello",
         "message0": "Hello",
         "previousStatement": null,
-  	"nextStatement": null,
+  	    "nextStatement": null,
         /*
           "args0": [
           {
@@ -48,8 +48,17 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         //"extensions": ["contextMenu_variableSetterGetter"]
     },{
   	"type": "marty_simple_walk",
-  	"message0": "Walk forward %1 steps",
-  	"args0": [{
+  	"message0": "Walk %1 %2 steps",
+  	"args0": [
+        {
+            "type": "field_dropdown",
+            "name": "DIRECTION",
+            "value": "forward",
+            "options": [
+                [ "forward", "40" ],
+                [ "backward", "-40" ]
+            ]
+        }, {
             "type": "field_number",
             "name": "STEPS",
             "value": 2,
@@ -60,6 +69,28 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "nextStatement": null,
         "colour": "%{BKY_MARTY_HUE}"
 
+    },{
+    "type": "marty_simple_turn",
+    "message0": "Turn %1 %2 steps",
+    "args0": [
+        {
+            "type": "field_dropdown",
+            "name": "DIRECTION",
+            "value": "left",
+            "options": [
+                [ "left", "100" ],
+                [ "right", "-100" ]
+            ]
+        }, {
+            "type": "field_number",
+            "name": "STEPS",
+            "value": 2,
+            "min": 0,
+            "precision": 1
+        }],
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_MARTY_HUE}"
     },{
   	"type": "marty_walk",
   	"message0": "Walk %1 steps of length %2, turning %3, step time: %4",
@@ -103,8 +134,8 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
                 "name": "SIDE",
                 "value": "LEFT",
                 "options": [
-                    [ "left item", "left" ],
-                    [ "right item", "right" ]
+                    [ "left", "left" ],
+                    [ "right", "right" ]
                 ]
             },{
                 "type": "field_number",
@@ -123,6 +154,18 @@ Blockly.defineBlocksWithJsonArray([  // BEGIN JSON EXTRACT
         "previousStatement": null,
         "nextStatement": null,
         "colour": "%{BKY_MARTY_HUE}"
+    },{
+        "type": "marty_disable_motors",
+        "message0": "Disable motors",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_MARTY_HUE}",
+    },{
+        "type": "marty_enable_motors",
+        "message0": "Enable motors",
+        "previousStatement": null,
+        "nextStatement": null,
+        "colour": "%{BKY_MARTY_HUE}",
     }
 
 ]);  // END JSON EXTRACT (Do not delete this comment.)

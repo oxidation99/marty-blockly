@@ -31,6 +31,11 @@ Blockly.JavaScript['marty_walk'] = function(block){
 };
 
 Blockly.JavaScript['marty_simple_walk'] = function(block){
+    if (block.getField('DIRECTION')) {
+        var step_length = String(Number(block.getFieldValue('DIRECTION')));
+    } else {
+        return 'console.log(\'Direction not found\');';    
+    }
     if (block.getField('STEPS')) {
         // Internal number.
         var steps = String(Number(block.getFieldValue('STEPS')));
@@ -38,9 +43,28 @@ Blockly.JavaScript['marty_simple_walk'] = function(block){
   	return 'console.log(\'Number of steps not found\');';
     }
     
-    var step_length = '40';
+    //var step_length = '40';
     var step_time = '1.8';
     var turn = '0';
+    return 'marty.walk(' + steps + ', ' + turn + ', ' + step_time*1000 +', ' + step_length + ');\n';
+};
+
+Blockly.JavaScript['marty_simple_turn'] = function(block){
+    if (block.getField('DIRECTION')) {
+        var turn = String(Number(block.getFieldValue('DIRECTION')));
+    } else {
+        return 'console.log(\'Direction not found\');';    
+    }
+    if (block.getField('STEPS')) {
+        // Internal number.
+        var steps = String(Number(block.getFieldValue('STEPS')));
+    } else {
+    return 'console.log(\'Number of steps not found\');';
+    }
+    
+    var step_length = '0';
+    var step_time = '1.8';
+    //var turn = '0';
     return 'marty.walk(' + steps + ', ' + turn + ', ' + step_time*1000 +', ' + step_length + ');\n';
 };
 
@@ -53,4 +77,12 @@ Blockly.JavaScript['marty_kick'] = function(block){
   	return 'console.log(\'Kick not found\');';
     }
     return 'marty.kick(\'' + side + '\', ' + twist + ', ' + move_time*1000 + ');\n';
+}
+
+Blockly.JavaScript['marty_disable_motors'] = function(block){
+    return 'marty.disable_motors();\n';
+}
+
+Blockly.JavaScript['marty_enable_motors'] = function(block){
+    return 'marty.enable_motors();\n';
 }
